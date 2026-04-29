@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* WRAPPER */
+/* normal layout */
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    transition: all 0.3s ease;
+}
+
+/* 🔥 when no special user */
+.center-only {
+    justify-content: center;
+}
+
+/* left full width when centered */
+.center-only .left {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* hide right side completely */
+.center-only .right {
+    display: none;
+}
+
+/* LEFT */
+.left {
+    width: 72%;
+    margin-left: 30px;
+}
+
+/* RIGHT */
+.right {
+    width: 26%;
+    margin-right: 30px;
+    position: sticky;
+    top: 20px;
+}
+
+/* CARD */
+.card {
+    background: linear-gradient(135deg, #fff9db, #fff3bf);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* WELCOME */
+.welcome-box {
+    text-align: center;
+    animation: fadeDown 0.6s ease;
+}
+
+/* ANIMATION */
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* SPECIAL BANNER */
+.special-banner {
+    background: linear-gradient(90deg, #aeae0c, #64dd17);
+    padding: 12px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ATTENDANCE */
+.attendance-box {
+    min-height: 350px;
+    animation: fadeUp 0.6s ease;
+}
+
+/* CLASS ROW */
+.attendance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+}
+
+.attendance-row:hover {
+    background: #eef6ff;
+}
+
+/* BUTTONS */
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.present { background: #28a745; color: white; }
+.absent { background: #dc3545; color: white; }
+.undo { background: orange; color: white; }
+
+/* NAV */
+.nav-btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin: 5px;
+    background: #4facfe;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.logout {
+    background: red;
+}
+
+/* SPECIAL BOX */
+.special-box {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border: 2px solid #00c853;
+    max-height: 500px;
+    overflow-y: auto;
+    line-height: 1.6;
+}
+
+/* scrollbar */
+.special-box::-webkit-scrollbar {
+    width: 6px;
+}
+.special-box::-webkit-scrollbar-thumb {
+    background: #00c853;
+    border-radius: 10px;
+}
+/* 🔥 Dream line animation */
+.dream-text {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+
+    background: linear-gradient(90deg, #d94703, #e7ba09, #2ec0e9);
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: shine 3s linear infinite;
+}
+
+/* gradient move */
+@keyframes shine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* subtle fade */
+.dream-text {
+    animation: shine 3s linear infinite, fadeIn 2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
+<div class="wrapper {% if not special_user %}center-only{% endif %}">
+
+    <!-- LEFT -->
+    <div class="left">
+       
+        <!-- WELCOME -->
+        <div class="card welcome-box">
+             <p class="dream-text">
+    ✨ If you're dreaming, make sure you dream big ✨</p>
+            <h2>Welcome {{ current_user.username }} 👋</h2>
+            <p><b>Section:</b> {{ current_user.section }}</p>
+
+            {% if special_user %}
+            <div class="special-banner">
+                🌟 You are Supercalifragilisticexpialidocious 💚 Keep going!
+            </div>
+            {% else %}
+                <div class="special-banner">
+                    🌟 You are amazing just the way you are! 💚 Keep shining!
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- ATTENDANCE -->
+        <div class="card attendance-box">
+            <h3>📅 Today: {{ today }} {{ date }}</h3>
+
+            {% if timetable %}
+                {% for e in timetable %}
+                    <div class="attendance-row">
+
+                        <span>
+                            <b>{{ e.slot }}</b> → {{ e.subject }}
+                        </span>
+
+                        <span>
+                            {% set status = attendance.get(e.id) %}
+
+                            {% if status %}
+                                <form action="{{ url_for('feature.undo_attendance') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="timetable_id" value="{{ e.id }}">
+                                    <button class="btn undo">↩️</button>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('feature.mark_attendance') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="timetable_id" value="{{ e.id }}">
+                                    <button class="btn present" name="status" value="Present">✅</button>
+                                    <button class="btn absent" name="status" value="Absent">❌</button>
+                                </form>
+                            {% endif %}
+                        </span>
+
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No classes today 🎉</p>
+            {% endif %}
+        </div>
+
+        <!-- NAV -->
+        <a href="{{ url_for('feature.attendance_summary') }}" class="nav-btn">⛄️Attendance</a>
+        <a href="{{ url_for('feature.full_timetable') }}" class="nav-btn">Full Timetable 📅</a>
+        <a href="{{ url_for('feature.calendar') }}" class="nav-btn">📅 Calendar</a>
+        <a href="{{url_for('auth.home')}}" class="nav-btn">🏠 Home</a>
+
+        <br><br>
+
+        <a href="{{ url_for('auth.logout') }}" class="nav-btn logout">Logout</a>
+
+    </div>
+
+    <!-- RIGHT (UNCHANGED) -->
+    {% if special_user %}
+    <div class="right">
+        <div class="card special-box">
+
+💬 <b>Special Message:</b><br><br>
+🔥 Sometimes I wish you could see yourself the way I see you...👀 maybe then you’d realize how incredible you truly are.🤩 You’re much stronger,💪 smarter😎, and more capable than you think.😭🙌
+<br>
+You may feel like you’re not enough, like you can’t do things the way others can…🙅🏻‍♂️🤦🏻‍♂️ but I see something in you that you probably don’t see in yourself yet.🙂 You have a strength🤓, a potential😫, and a spark that’s rare🙌✨🧿. And I truly believe you🔥 can achieve everything you set your heart on.🧿🌻💙.
+<br>
+In a world 🗺️ 🌎full of people placing expectations on you, judging you😒😤, and making you doubt yourself…😡😭 I want to be always there, standing by your side...🫨 Even in the loudest crowd🥶, I want my voice to be the one you hear🎧, the one that drowns out all the noise🙉, so that you hear only me…☕️ because I want to keep you motivated🍃🌱 in this world that so often tries to bring you down🔮. And when you say “I’m your last option🥃🧿,” I don’t see it as losing to the world🌎 and coming to me😪,I see it as trust✨🌻😫. It means that when everything else fades😶‍🌫️, you still believe😭, I’ll be there to hold you🥺, to understand you🙄, and to make things feel okay again😴🍺🍻🥃🍾. And honestly, I’m grateful to be that person in ur lyf...🙂‍↔️🙂‍↔️
+<br>
+Go after your dreams🛌... Don’t stop❌, don’t hold back🙅🏻‍♂️. And always remember you will never disappoint me🌻. Because in my eyes👁️👁️, you will always be the one who gave her 100000%😩🧿😭, the one who kept trying no matter what🥺🙌🧿(fact)...
+<br>
+And I’m always here…🫡 no matter what👻, no matter when.🤝🤌🧿
+
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% if special_user %}
+<script>
+    alert("Hey {{ current_user.username }} 👀✨ You are special 💚");
+</script>
+{% endif %}
+
+{% endblock %}

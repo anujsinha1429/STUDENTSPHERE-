@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* wrapper full width */
+.timetable-wrapper {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* GRID 🔥 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* card */
+.day-card {
+    background: white;
+    padding: 18px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+/* hover effect */
+.day-card:hover {
+    transform: translateY(-5px);
+}
+
+/* day title */
+.day-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* section */
+.section-heading {
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* compact list */
+ul {
+    padding-left: 18px;
+    margin: 5px 0;
+}
+
+li {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+/* back button */
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background: #4facfe;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: #00c6ff;
+}
+
+</style>
+
+<div class="timetable-wrapper">
+
+    <h2>📅 Full Timetable</h2>
+    <p><b>Section:</b> {{ current_user.section }}</p>
+
+    <!-- 🔥 GRID START -->
+    <div class="grid">
+
+        {% for day, entries in timetable.items() %}
+        <div class="day-card">
+
+            <div class="day-title">📌 {{ day }}</div>
+
+            {% if entries.morning %}
+            <div>
+                <div class="section-heading">🌅 Morning</div>
+                <ul>
+                    {% for e in entries.morning %}
+                    <li>{{ e.slot }} → {{ e.subject }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if entries.evening %}
+            <div>
+                <div class="section-heading">🌇 Evening</div>
+                <ul>
+                    {% for e in entries.evening %}
+                    <li>{{ e.slot }} → {{ e.subject }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+    <!-- 🔥 GRID END -->
+
+    <a href="{{ url_for('feature.dashboard') }}" class="back-btn">
+        ⬅ Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* center */
+.home {
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* 🔥 title animation */
+.hero-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    animation: fadeSlide 1s ease;
+}
+
+/* subtitle */
+.tagline {
+    color: #f1f1f1;
+    margin-bottom: 15px;
+}
+
+/* 🔥 motivation line */
+.motivation {
+    font-size: 16px;
+    color: #e0f7fa;
+    margin-bottom: 25px;
+    animation: fadeSlide 1.5s ease;
+}
+
+/* 🔥 glass box */
+.info-box {
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 25px;
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    animation: fadeSlide 2s ease;
+}
+
+/* buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.primary {
+    background: #4facfe;
+}
+
+.primary:hover {
+    background: #00c6ff;
+    transform: scale(1.05);
+}
+
+.secondary {
+    background: #6c757d;
+}
+
+.secondary:hover {
+    background: #5a6268;
+}
+
+/* animation */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
+<section class="home">
+
+    <h1 class="hero-title">📊 Welcome to StudentSphere ⭐</h1>
+    <p class="tagline">Organize your day and boost your productivity!</p>
+    {% if current_user.is_authenticated %}
+
+            <h3 style="color:rgb(106, 0, 14);" >
+                Welcome back, {{ current_user.username | capitalize }} 👋
+            </h3>
+    {% endif %}
+
+    <!-- 🔥 Motivation -->
+    <p class="motivation">
+        🚀 Small steps every day lead to big success. Stay consistent, stay ahead.
+    </p>
+
+    <!-- 🔥 Info Box -->
+    <div class="info-box">
+    <h3>✨ About StudentSphere ⭐</h3>
+
+    <ul style="text-align:left; line-height:1.8; color:white;">
+
+        <li>📊 Track your attendance subject-wise with real-time percentage</li>
+
+        <li>📅 Integrated academic calendar with holidays & important events</li>
+
+        <li>📈 Visual graphs to analyze your performance easily</li>
+
+        <li>🎯 Smart insights like "classes needed" & "safe bunk limit"</li>
+
+        <li>⚡ Clean dashboard to manage your daily academic life efficiently</li>
+
+    </ul>
+</div>
+
+    <!-- 🔥 Buttons -->
+    <div class="auth-links">
+
+        {% if current_user.is_authenticated %}
+
+            <a href="{{ url_for('feature.dashboard') }}" class="btn primary">
+                📈 Track My Day
+            </a>
+
+            <a href="{{ url_for('auth.logout') }}" class="btn secondary">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('auth.login') }}" class="btn primary">Login</a>
+            <a href="{{ url_for('auth.register') }}" class="btn secondary">Create Account</a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

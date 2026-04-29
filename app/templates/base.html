@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentSphere ⭐</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(0,0,0,0.7);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .nav-links a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #00f2fe;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Center layout */
+        .center-layout {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px); /* FIX */
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .small-card {
+            width: 350px;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            background: #4facfe;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #00c6ff;
+        }
+
+        /* Footer (FIXED PROPERLY) */
+        .footer {
+            text-align: center;
+            padding: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #00f2fe;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left, .right {
+                width: 95% !important;
+                margin: 0;
+                position: static;
+            }
+
+            .card {
+                width: 100%;
+            }
+
+            .nav-btn {
+                display: block;
+                width: 90%;
+                margin: 8px auto;
+                text-align: center;
+            }
+
+            .form-box {
+                width: 90% !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>📊 TrackMyClass ⭐</h2>
+
+        <div class="nav-links">
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}">Register</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        © 2026 All rights reserved | 👨‍💻 Built with ❤️ by 
+        <a href="https://www.linkedin.com/in/anujsinha1429/" target="_blank">
+            Anuj Kumar Sinha 
+        </a>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+    <title>📅 Calendar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        /* wrapper */
+        .calendar-wrapper {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        /* title */
+        .title {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        /* glass card */
+        .calendar-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* calendar size */
+        #calendar {
+            width: 100%;
+        }
+
+        /* buttons */
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-btn:hover {
+            background: #eee;
+        }
+
+        /* FullCalendar tweaks */
+        .fc-toolbar-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .fc-button {
+            background: #4facfe !important;
+            border: none !important;
+        }
+
+        .fc-button:hover {
+            background: #00c6ff !important;
+        }
+
+        .fc-daygrid-day:hover {
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+        /* 🔥 Highlight current date */
+        .fc-day-today {
+            background: rgba(0, 0, 0, 0.2) !important;  /* dark shade */
+            border: 2px solid #000 !important;
+        }
+
+        /* 🔥 make today's number bold */
+        .fc-day-today .fc-daygrid-day-number {
+            font-weight: bold;
+            color: black;
+        }
+
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+
+<body>
+
+<div class="calendar-wrapper">
+
+    <h2 class="title">📅 My Calendar</h2>
+
+    <div class="calendar-card">
+        <div id="calendar"></div>
+    </div>
+
+    <a href="{{ url_for('feature.dashboard') }}" class="back-btn">
+        ⬅ Back to Dashboard
+    </a>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+
+        initialView: 'dayGridMonth',
+        height: "auto",
+
+        events: {{ events | tojson | safe }},
+
+        eventClick: function(info) {
+            alert("📌 " + info.event.title);
+        }
+
+    });
+
+    calendar.render();
+});
+</script>
+
+{% endblock %}

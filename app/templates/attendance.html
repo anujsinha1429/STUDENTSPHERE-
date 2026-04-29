@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* layout */
+.attendance-wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+/* left table */
+.table-section {
+    flex: 2;
+}
+
+/* right graph */
+.graph-section {
+    flex: 1;
+    position: sticky;
+    top: 20px;
+}
+
+/* card */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th {
+    background: #4facfe;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+/* badges */
+.badge-green {
+    color: green;
+    font-weight: bold;
+}
+
+.badge-orange {
+    color: orange;
+    font-weight: bold;
+}
+
+.badge-red {
+    color: red;
+    font-weight: bold;
+}
+
+/* nav button */
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background: #fe8f4f;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: #00c6ff;
+}
+
+</style>
+
+<h2>📊 Attendance Overview</h2>
+
+<div class="attendance-wrapper">
+
+    <!-- LEFT: TABLE -->
+    <div class="table-section">
+        <div class="card">
+
+            <table>
+                <tr>
+                    <th>Subject</th>
+                    <th>Total</th>
+                    <th>Present</th>
+                    <th>Percentage</th>
+                    <th>Needed</th>
+                    <th>Can Bunk</th>
+                </tr>
+
+                {% for item in data %}
+                <tr>
+                    <td>{{ item.subject }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>{{ item.present }}</td>
+
+                    <!-- percentage -->
+                    <td class="
+                        {% if item.percentage >= 80 %} badge-green
+                        {% elif item.percentage >= 75 %} badge-orange
+                        {% else %} badge-red
+                        {% endif %}
+                    ">
+                        {{ item.percentage }}%
+                    </td>
+
+                    <!-- needed -->
+                    <td>
+                        {% if item.required > 0 %}
+                            <span class="badge-red">🔴 {{ item.required }}</span>
+                        {% else %}
+                            <span class="badge-green">🟢 Safe</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- bunk -->
+                    <td>
+                        {% if item.bunk > 0 %}
+                            <span class="badge-green">🟢 {{ item.bunk }}</span>
+                        {% else %}
+                            <span class="badge-red">🔴 No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+        <a href="{{ url_for('feature.dashboard') }}" class="back-btn">⬅ Back to Dashboard</a>
+    </div>
+
+    <!-- RIGHT: GRAPH -->
+    <div class="graph-section">
+        <div class="card">
+            <h3>📈 Attendance Graph</h3>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+
+const ctx = document.getElementById('myChart');
+
+const subjects = {{ subjects | tojson | safe }};
+const percentages = {{ percentages | tojson | safe }};
+
+const colors = percentages.map(p => {
+    if (p >= 80) return 'rgba(0, 128, 0, 0.8)';
+    else if (p >= 75) return 'rgba(255, 165, 0, 0.8)';
+    else return 'rgba(255, 0, 0, 0.8)';
+});
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: subjects,
+        datasets: [{
+            label: 'Attendance %',
+            data: percentages,
+            backgroundColor: colors
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+});
+
+</script>
+
+{% endblock %}
