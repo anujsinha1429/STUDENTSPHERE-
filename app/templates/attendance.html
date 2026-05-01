@@ -3,26 +3,40 @@
 
 <style>
 
-/* layout */
+/* ===== PAGE ===== */
+
+.attendance-page{
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* ===== LAYOUT ===== */
+
 .attendance-wrapper {
     display: flex;
     gap: 30px;
     align-items: flex-start;
+    margin-top: 20px;
 }
 
-/* left table */
+/* ===== LEFT TABLE ===== */
+
 .table-section {
     flex: 2;
+    min-width: 0;
 }
 
-/* right graph */
+/* ===== RIGHT GRAPH ===== */
+
 .graph-section {
     flex: 1;
+    min-width: 280px;
     position: sticky;
     top: 20px;
 }
 
-/* card */
+/* ===== CARD ===== */
+
 .card {
     background: white;
     padding: 20px;
@@ -30,9 +44,19 @@
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-/* table */
+/* ===== TABLE CONTAINER ===== */
+
+.table-container{
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ===== TABLE ===== */
+
 table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
     margin-top: 10px;
 }
@@ -40,19 +64,22 @@ table {
 th {
     background: #4facfe;
     color: white;
-    padding: 10px;
+    padding: 12px;
+    font-size: 15px;
 }
 
 td {
-    padding: 10px;
+    padding: 12px;
     text-align: center;
+    font-size: 15px;
 }
 
 tr:nth-child(even) {
     background: #f2f2f2;
 }
 
-/* badges */
+/* ===== BADGES ===== */
+
 .badge-green {
     color: green;
     font-weight: bold;
@@ -68,51 +95,65 @@ tr:nth-child(even) {
     font-weight: bold;
 }
 
-/* nav button */
+/* ===== BUTTON ===== */
+
 .back-btn {
     display: inline-block;
     margin-top: 20px;
-    padding: 10px 15px;
+    padding: 12px 18px;
     background: #fe8f4f;
     color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
 }
 
 .back-btn:hover {
     background: #00c6ff;
+    transform: translateY(-2px);
 }
+
+/* ===== GRAPH ===== */
+
+.graph-card canvas{
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* ===== MOBILE ===== */
+
 @media (max-width: 768px) {
 
     .attendance-wrapper {
         flex-direction: column;
     }
 
+    .table-section,
     .graph-section {
-        position: static;
         width: 100%;
     }
 
-    .table-section {
-        width: 100%;
+    .graph-section {
+        position: static;
     }
 
     .card {
-        padding: 12px;
-        overflow-x: auto;
+        padding: 15px;
     }
 
-    table {
-        min-width: 600px;
+    h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    h3{
+        font-size: 22px;
     }
 
     th, td {
         font-size: 14px;
-        padding: 8px;
-    }
-
-    h2 {
-        font-size: 22px;
+        padding: 10px;
     }
 
     .back-btn {
@@ -120,86 +161,158 @@ tr:nth-child(even) {
         text-align: center;
         box-sizing: border-box;
     }
+}
 
-    canvas {
-        max-width: 100%;
+/* ===== EXTRA SMALL DEVICES ===== */
+
+@media (max-width: 480px){
+
+    h2{
+        font-size: 24px;
+    }
+
+    h3{
+        font-size: 20px;
+    }
+
+    th, td{
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .card{
+        padding: 12px;
+        border-radius: 12px;
     }
 }
 
 </style>
 
+<div class="attendance-page">
+
 <h2>📊 Attendance Overview</h2>
 
 <div class="attendance-wrapper">
 
-    <!-- LEFT: TABLE -->
+    <!-- LEFT TABLE -->
+
     <div class="table-section">
+
         <div class="card">
 
-            <table>
-                <tr>
-                    <th>Subject</th>
-                    <th>Total</th>
-                    <th>Present</th>
-                    <th>Percentage</th>
-                    <th>Needed</th>
-                    <th>Can Bunk</th>
-                </tr>
+            <div class="table-container">
 
-                {% for item in data %}
-                <tr>
-                    <td>{{ item.subject }}</td>
-                    <td>{{ item.total }}</td>
-                    <td>{{ item.present }}</td>
+                <table>
 
-                    <!-- percentage -->
-                    <td class="
-                        {% if item.percentage >= 80 %} badge-green
-                        {% elif item.percentage >= 75 %} badge-orange
-                        {% else %} badge-red
-                        {% endif %}
-                    ">
-                        {{ item.percentage }}%
-                    </td>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total</th>
+                        <th>Present</th>
+                        <th>Percentage</th>
+                        <th>Needed</th>
+                        <th>Can Bunk</th>
+                    </tr>
 
-                    <!-- needed -->
-                    <td>
-                        {% if item.required > 0 %}
-                            <span class="badge-red">🔴 {{ item.required }}</span>
-                        {% else %}
-                            <span class="badge-green">🟢 Safe</span>
-                        {% endif %}
-                    </td>
+                    {% for item in data %}
 
-                    <!-- bunk -->
-                    <td>
-                        {% if item.bunk > 0 %}
-                            <span class="badge-green">🟢 {{ item.bunk }}</span>
-                        {% else %}
-                            <span class="badge-red">🔴 No</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+                    <tr>
+
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.total }}</td>
+                        <td>{{ item.present }}</td>
+
+                        <!-- Percentage -->
+
+                        <td class="
+                            {% if item.percentage >= 80 %}
+                                badge-green
+                            {% elif item.percentage >= 75 %}
+                                badge-orange
+                            {% else %}
+                                badge-red
+                            {% endif %}
+                        ">
+                            {{ item.percentage }}%
+                        </td>
+
+                        <!-- Needed -->
+
+                        <td>
+
+                            {% if item.required > 0 %}
+
+                                <span class="badge-red">
+                                    🔴 {{ item.required }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge-green">
+                                    🟢 Safe
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Bunk -->
+
+                        <td>
+
+                            {% if item.bunk > 0 %}
+
+                                <span class="badge-green">
+                                    🟢 {{ item.bunk }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge-red">
+                                    🔴 No
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
 
         </div>
 
-        <a href="{{ url_for('feature.dashboard') }}" class="back-btn">⬅ Back to Dashboard</a>
+        <a href="{{ url_for('feature.dashboard') }}" class="back-btn">
+            ⬅ Back to Dashboard
+        </a>
+
     </div>
 
-    <!-- RIGHT: GRAPH -->
+    <!-- RIGHT GRAPH -->
+
     <div class="graph-section">
-        <div class="card">
+
+        <div class="card graph-card">
+
             <h3>📈 Attendance Graph</h3>
+
             <canvas id="myChart"></canvas>
+
         </div>
+
     </div>
 
 </div>
 
-<!-- Chart -->
+</div>
+
+<!-- ===== CHART ===== -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <script>
 
 const ctx = document.getElementById('myChart');
@@ -208,29 +321,67 @@ const subjects = {{ subjects | tojson | safe }};
 const percentages = {{ percentages | tojson | safe }};
 
 const colors = percentages.map(p => {
-    if (p >= 80) return 'rgba(0, 128, 0, 0.8)';
-    else if (p >= 75) return 'rgba(255, 165, 0, 0.8)';
-    else return 'rgba(255, 0, 0, 0.8)';
+
+    if (p >= 80){
+        return 'rgba(0, 128, 0, 0.8)';
+    }
+
+    else if (p >= 75){
+        return 'rgba(255, 165, 0, 0.8)';
+    }
+
+    else{
+        return 'rgba(255, 0, 0, 0.8)';
+    }
+
 });
 
 new Chart(ctx, {
+
     type: 'bar',
+
     data: {
+
         labels: subjects,
+
         datasets: [{
+
             label: 'Attendance %',
+
             data: percentages,
-            backgroundColor: colors
+
+            backgroundColor: colors,
+            borderRadius: 8
+
         }]
     },
+
     options: {
+
+        responsive: true,
+        maintainAspectRatio: true,
+
+        plugins: {
+
+            legend: {
+                display: true
+            }
+
+        },
+
         scales: {
+
             y: {
+
                 beginAtZero: true,
                 max: 100
+
             }
+
         }
+
     }
+
 });
 
 </script>
