@@ -1,6 +1,6 @@
 {
   "name": "TrackMyClass",
-  "short_name": "TMC",
+  "short_name": "ATTENDANCE",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
