@@ -5,6 +5,7 @@ from run import app
 
 
 with app.app_context():
+   db.create_all()
 
    timetable_data = {
     "25E1H2": {
