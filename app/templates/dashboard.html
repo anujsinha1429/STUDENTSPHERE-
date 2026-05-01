@@ -32,15 +32,11 @@
 /* LEFT */
 .left {
     width: 72%;
-    margin-left: 30px;
 }
 
 /* RIGHT */
 .right {
     width: 26%;
-    margin-right: 30px;
-    position: sticky;
-    top: 20px;
 }
 
 /* CARD */
@@ -181,6 +177,64 @@
         opacity: 1;
         transform: translateY(0);
     }
+
+}
+ body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px){
+
+    .wrapper{
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .left,
+    .right{
+        width: 100%;
+        margin: 0;
+    }
+
+    .center-only .left{
+        width: 100%;
+    }
+
+    .card{
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .attendance-row{
+        flex-direction: row;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .nav-btn{
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .dream-text{
+        font-size: 16px;
+    }
+
+    h2{
+        font-size: 32px;
+    }
+
 }
 
 </style>
