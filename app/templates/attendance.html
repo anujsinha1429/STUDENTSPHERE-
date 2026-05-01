@@ -82,6 +82,49 @@ tr:nth-child(even) {
 .back-btn:hover {
     background: #00c6ff;
 }
+@media (max-width: 768px) {
+
+    .attendance-wrapper {
+        flex-direction: column;
+    }
+
+    .graph-section {
+        position: static;
+        width: 100%;
+    }
+
+    .table-section {
+        width: 100%;
+    }
+
+    .card {
+        padding: 12px;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .back-btn {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    canvas {
+        max-width: 100%;
+    }
+}
 
 </style>
 
